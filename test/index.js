@@ -1,32 +1,9 @@
 'use strict'
 const test = require('tape')
-//const config = {
-//  host: '192.168.99.100',
-//  port: 32769,
-//}
-//const connS = require('../src/db')(config)
-//const api = require('../src/api')
-//const server = require('../src/server')
-//
-//let apiS = connS.map(api)
-//// apiS.onValue(testAPI) // HACK
-//
-//function testAPI (a) {
-//  test('create() add() and get() work - can fetch things betewen unix timestamps', t => {
-//    t.plan(2)
-//    a.create('authors').log('create table')
-//    let timestamp = require('unix-timestamp')
-//    let now = timestamp.now()
-//    let later = timestamp.add(now, 20)
-//    a.add('authors',  { name: "Irving Goffmann" }).onValue(_ => {
-//      a.add('authors',  { name: "Mark Twain" }).onValue(_ => {
-//        a.get('authors', now, later).onValue(v => {
-//          t.ok(v.name)
-//        })
-//      })
-//    })
-//  })
-//}
+const request = require('request-json');
+const timestamp = require('unix-timestamp')
+
+const testTable = "cool_observation_type"
 
 const config = {
   port: 8889,
@@ -36,25 +13,49 @@ const config = {
   },
 }
 
-const serverS = require('..')(config)
-
+let serverS = require('..')(config)
 serverS.onValue(server => {
+
   console.log('server running, doing HTTP tests')
+
+  // setup test cleanup
+  test.onFinish(() => server.close())
+
   test('testing server with post requests', t => {
 
-    // POST create a table, accept either 200 or 500 resp
+    t.plan(3)
+
+    let client = request.createClient('http://localhost:' + config.port + '/')
+
+    // PUT create a table, accept either 200 or 500 resp
     // (we don't know/care if the table has already been created)
+    client.put(`create/${testTable}`, {}, (err, res, body) => {
+      let status = res.statusCode
+      console.log(body)
+      if (status == 200 || status == 500)
+        t.ok('got a 200 or 500 response back from server on PUT table', status)
+      else
+        t.notOk(res.statusCode)
 
-    // POST add an observation to that table, expect 200
+      // PUT add an observation to that table, expect 200
+      let now = timestamp.now()
+      let later = timestamp.add(now, 20)
+      client.put(`add/${testTable}`, {}, (err, res, body) => {
+        let status = res.statusCode
+        console.log(body)
+        t.equal(status, 200, 'got a 200 back from server on PUT observation')
 
-    // GET the observation we made, expect 200 + observation back
-
-    // POST add an observation to a not-existing table, expect 500
-
-    // GET observation with various bad tables, times, missing fields
-    // all should result in 500 requests
-
-    server.close()
-    console.log('server closed')
+        // POST the observation we made, expect 200 + observation back
+        client.post(`query/${testTable}`, {
+          epoch1: now,
+          epoch2: later,
+        }, (err, res, body) => {
+          let status = res.statusCode
+          console.log(body)
+          t.equal(status, 200, 'got a 200 back from server on GET observation')
+        })
+      })
+    })
   })
 })
+

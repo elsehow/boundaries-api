@@ -1,3 +1,4 @@
+'use strict'
 const r = require('rethinkdb')
 const Kefir = require('kefir')
 const timestamp = require('unix-timestamp')
@@ -23,8 +24,10 @@ module.exports = (connection) => {
 
   // adds an observation to table
   // returns a stream
-  function add (table, observation) {
-    observation.timestamp = r.epochTime(timestamp.now())
+  function add (table) {
+    let observation = {
+      timestamp: r.epochTime(timestamp.now())
+    }
     return streamFrom(
       r.table(table).insert(observation)
     )
