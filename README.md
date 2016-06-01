@@ -1,6 +1,12 @@
 # boundaries-api
 
-short description
+> Central to the cognitive processes that constitute science are both material objects — tools and machines of many different types — and writing practices quite unlike those typically studied by anthropologists investigating literacy. In order to generate a data set, collections of observations that can be compared with each other, scientists use coding schemes to circumscribe and delineate the world they examine. **When disparate events are viewed through a single coding scheme, equivalent observations become possible.**
+
+- Charles Goodwin, *Professional Vision*.
+
+`boundaries-api` is a tool for making observations in time. Observations described /only/ by their type, and by the time at which they were observed. You may `create` a class of observation, `add` observations to that class, and `get` observations of a given class between two times. No metadata can be attatched to observatiosn (though I'm open to hearing convincing use cases).
+
+This project is under active development. See [contributing.md](contributing.md).
 
 ## install
 
@@ -31,7 +37,7 @@ serverS.onValue(server => {
 })
 ```
 
-## HTTP api
+## HTTP API
 
 ### PUT '/create/yourObservationClass'
 
@@ -59,7 +65,3 @@ Where `epoch1` and `epoch2` are two [unix epochs](https://en.wikipedia.org/wiki/
 
 BSD
 
-## TODOs
-- PUT add an observation to a not-existing table, expect 500
-- PUT get with bad tables, times, missing fields - all should 422
-- split out erroring tests and passing tests; randomize the order / number of times those tests get run

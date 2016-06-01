@@ -19,7 +19,10 @@ serverS.onValue(server => {
   console.log('server running, doing HTTP tests')
 
   // setup test cleanup
-  test.onFinish(() => server.close())
+  test.onFinish(() => {
+    server.close()
+    process.exit(0)
+  })
 
   test('testing server with post requests', t => {
 
