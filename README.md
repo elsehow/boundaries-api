@@ -1,10 +1,10 @@
 # boundaries-api
 
-> Central to the cognitive processes that constitute science are both material objects — tools and machines of many different types — and writing practices quite unlike those typically studied by anthropologists investigating literacy. In order to generate a data set, collections of observations that can be compared with each other, scientists use coding schemes to circumscribe and delineate the world they examine. **When disparate events are viewed through a single coding scheme, equivalent observations become possible.**
+> Central to the cognitive processes that constitute science are both material objects — tools and machines of many different types — and writing practices quite unlike those typically studied by anthropologists investigating literacy. In order to generate a data set, collections of observations that can be compared with each other, scientists use coding schemes to circumscribe and delineate the world they examine. /When disparate events are viewed through a single coding scheme, equivalent observations become possible./
 
-- Charles Goodwin, *Professional Vision*.
+\- Charles Goodwin, *Professional Vision*.
 
-`boundaries-api` is a tool for making observations in time. Observations described /only/ by their type, and by the time at which they were observed. You may `create` a class of observation, `add` observations to that class, and `get` observations of a given class between two times. No metadata can be attatched to observatiosn (though I'm open to hearing convincing use cases).
+`boundaries-api` is a tool for making observations in time. Observations described /only/ by their type, and by the time at which they were observed. You may `create` a class of observation, `add` observations to that class, and `get` observations of a given class between two times. No metadata can be attached to observations.
 
 This project is under active development. See [contributing.md](contributing.md).
 
