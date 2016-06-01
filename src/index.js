@@ -1,17 +1,10 @@
-module.exports = (conn) => {
+'use strict'
+// returns a stream of servers (an object with a close() function)
+module.exports = (config) => {
+  const connS = require('./db')(config.db)
+  const api = require('./api')
+  const server = require('./server')
+  const listen = app => app.listen(config.port)
 
-  // adds an observation to table
-  // returns a stream
-  function add (table, observation) {
-  }
-
-  // gets an observation
-  // returns a stream
-  function get (table, date1, date2) {
-  }
-
-  return {
-    add: (table, observation) => { },
-    get: (table, date1, date2) => { },
-  }
+  return connS.map(api).map(server).map(listen)
 }
