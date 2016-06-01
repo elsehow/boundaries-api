@@ -17,3 +17,5 @@ Now you can edit any js files - tests will automatically re-run
 ## Adding features
 
 Since we're using RethinkDB, there should be an API for subscribing to updates to a table. This could open a websocket connection, maybe using [websocket-stream](https://github.com/maxogden/websocket-stream) (or socket.io if that's too minimal).
+
+We should add support for authentication, both with the database and between the clients and HTTP servers. Any research or suggestions on this front would be much appreciated. I would prefer to avoid SaSS solutions, but would consider e.g. Google auth as an intermediate solution, if it really made life easy.

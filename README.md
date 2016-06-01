@@ -1,6 +1,6 @@
 # boundaries-api
 
-> Central to the cognitive processes that constitute science are both material objects — tools and machines of many different types — and writing practices quite unlike those typically studied by anthropologists investigating literacy. In order to generate a data set, collections of observations that can be compared with each other, scientists use coding schemes to circumscribe and delineate the world they examine. *When disparate events are viewed through a single coding scheme, equivalent observations become possible.*
+> Central to the cognitive processes that constitute science are both material objects — tools and machines of many different types — and writing practices quite unlike those typically studied by anthropologists investigating literacy. In order to generate a data set, collections of observations that can be compared with each other, scientists use coding schemes to circumscribe and delineate the world they examine. When disparate events are viewed through a single coding scheme, equivalent observations become possible.
 
 \- Charles Goodwin, *Professional Vision*.
 
