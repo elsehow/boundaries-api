@@ -13,9 +13,20 @@ module.exports = (connection) => {
 
   // creates a table in the db
   function create (table) {
+    let existsMsg = table + ' already exists.'
     return streamFrom(
-      r.tableCreate(table)
-    ).flatMap(() => {
+      r.tableList()
+        .contains(table)
+        .do(tableExists => {
+          return r.branch(
+            tableExists,
+            existsMsg,
+            r.dbCreate('example_database')
+          );
+        })
+    ).flatMap(x => {
+      if (x === existsMsg)
+        return Kefir.constant(existsMsg)
       return streamFrom(
         r.table(table).indexCreate('timestamp')
       )
