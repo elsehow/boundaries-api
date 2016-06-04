@@ -10,20 +10,27 @@ function handle (response, stream) {
 
 module.exports = (api) => {
 
+  function handleCreate (req, res) {
+    handle(res, api.create(req.params.table))
+  }
+
+  function handleAdd (req, res) {
+    handle(res, api.add(req.params.table))
+  }
+
+  function handleQuery (req, res) {
+    handle(res, api.get(req.params.table, req.body.epoch1, req.body.epoch2))
+  }
+
   let app = express()
   app.use(bodyParser.json())
 
-  app.put('/create/:table', function (req, res) {
-    handle(res, api.create(req.params.table))
-  })
+  app.put('/create/:table', handleCreate)
 
-  app.put('/add/:table', function (req, res) {
-    handle(res, api.add(req.params.table))
-  })
+  //app.put('/add/:table', handleAdd)
+  app.get('/add/:table', handleAdd)
 
-  app.post('/query/:table', function (req, res) {
-    handle(res, api.get(req.params.table, req.body.epoch1, req.body.epoch2))
-  })
+  app.post('/query/:table', handleQuery)
 
   return app
 }

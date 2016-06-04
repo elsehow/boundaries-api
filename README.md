@@ -42,9 +42,11 @@ boundaries(config).onValue(server => {
 
 Create a new class of observations, with the given name (here `yourObservationClass`)
 
-### PUT '/add/yourObservationClass'
+### GET '/add/yourObservationClass'
 
 Add an observation to an existing class, here `yourObservationClass`)
+
+I know, why is this a GET? Well, I wanted to use YO to hit this route, and that can only make GET requests. Looking for better solutions.
 
 ### POST '/query/yourObservationClass'
 

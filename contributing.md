@@ -9,6 +9,10 @@ Clone this repository, then
 
 Now you can edit any js files - tests will automatically re-run
 
+## Probably good ideas
+
+/query/ should probably be a GET request with query params rather than JSON
+
 ## Validating inputs
 - PUT add an observation to a not-existing table, expect 500
 - PUT get with bad tables, times, missing fields - all should 422

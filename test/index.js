@@ -52,31 +52,28 @@ serverS.onValue(server => {
 
   })
 
-//  test('testing server with post requests', t => {
-//
-//    t.plan(3)
-//
-//
-//        // PUT add an observation to that table, expect 200
-//        let now = timestamp.now()
-//        let later = timestamp.add(now, 20)
-//        client.put(`add/${testTable}`, {}, (err, res, body) => {
-//          let status = res.statusCode
-//          console.log(body)
-//          t.equal(status, 200, 'got a 200 back from server on PUT observation')
-//
-//          // POST the observation we made, expect 200 + observation back
-//          client.post(`query/${testTable}`, {
-//            epoch1: now,
-//            epoch2: later,
-//          }, (err, res, body) => {
-//            let status = res.statusCode
-//            console.log(body)
-//            t.equal(status, 200, 'got a 200 back from server on GET observation')
-//          })
-//        })
-//      })
-//    })
-//
+  test('PUT an observation, then GET with a query', t => {
+
+    t.plan(2)
+
+    // PUT add an observation to that table, expect 200
+    let now = timestamp.now()
+    let later = timestamp.add(now, 20)
+
+    client.get(`add/${testTable}`, {}, (err, res, body) => {
+      let status = res.statusCode
+      console.log(body)
+      t.equal(status, 200, 'got a 200 back from server on GET observation')
+      // POST the observation we made, expect 200 + observation back
+      client.post(`query/${testTable}`, {
+        epoch1: now,
+        epoch2: later,
+      }, (err, res, body) => {
+        let status = res.statusCode
+        console.log(body)
+        t.equal(status, 200, 'got a 200 back from server on POST observation')
+      })
+    })
+  })
 })
 
