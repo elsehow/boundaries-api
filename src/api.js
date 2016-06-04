@@ -21,8 +21,8 @@ module.exports = (connection) => {
           return r.branch(
             tableExists,
             existsMsg,
-            r.dbCreate('example_database')
-          );
+            r.tableCreate(table)
+          )
         })
     ).flatMap(x => {
       if (x === existsMsg)
