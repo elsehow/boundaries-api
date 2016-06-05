@@ -15,6 +15,7 @@ const config = {
 }
 
 let serverS = require('..')(config)
+serverS.onError(e => console.warn(e))
 serverS.onValue(server => {
 
   console.log('server running, doing HTTP tests')

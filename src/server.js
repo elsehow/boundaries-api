@@ -9,10 +9,6 @@ function handle (response, stream) {
 
 module.exports = (api) => {
 
-  function handleCreate (req, res) {
-    handle(res, api.create(req.params.table))
-  }
-
   function handleAdd (req, res) {
     handle(res, api.add(req.params.table))
   }
@@ -23,9 +19,6 @@ module.exports = (api) => {
 
   let app = express()
 
-  app.put('/create/:table', handleCreate)
-
-  //app.put('/add/:table', handleAdd)
   app.get('/add/:table', handleAdd)
 
   app.get('/query/:table', handleQuery)
