@@ -48,19 +48,9 @@ Add an observation to an existing class, here `yourObservationClass`)
 
 I know, why is this a GET? Well, I wanted to use YO to hit this route, and that can only make GET requests. Looking for better solutions.
 
-### POST '/query/yourObservationClass'
+### GET '/query/yourObservationClass?t0=1464804227.762&t1=1464804235.249'
 
-This route queries observations in the given class that were added between two given times.
-It requires a JSON requst body of the form:
-
-```javascript
-{
-  epoch1: 1464804227.762,
-  epoch2: 1464804235.249,
-}
-```
-
-Where `epoch1` and `epoch2` are two [unix epochs](https://en.wikipedia.org/wiki/Unix_time). You can use [unix-timestamp](https://www.npmjs.com/package/unix-timestamp) to generate these in javascript.
+Get observations in the given class added between two given times, where `t0` and `t1` are two [unix epochs](https://en.wikipedia.org/wiki/Unix_time). You can use [unix-timestamp](https://www.npmjs.com/package/unix-timestamp) to generate these in javascript.
 
 ## License
 

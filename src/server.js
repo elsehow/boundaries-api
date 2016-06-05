@@ -1,6 +1,5 @@
 'use strict'
 const express = require('express')
-const bodyParser = require('body-parser')
 
 function handle (response, stream) {
   stream.onError(e => response.status(500).send(e))
@@ -19,18 +18,17 @@ module.exports = (api) => {
   }
 
   function handleQuery (req, res) {
-    handle(res, api.get(req.params.table, req.body.epoch1, req.body.epoch2))
+    handle(res, api.get(req.params.table, Number(req.query.t0), Number(req.query.t1)))
   }
 
   let app = express()
-  app.use(bodyParser.json())
 
   app.put('/create/:table', handleCreate)
 
   //app.put('/add/:table', handleAdd)
   app.get('/add/:table', handleAdd)
 
-  app.post('/query/:table', handleQuery)
+  app.get('/query/:table', handleQuery)
 
   return app
 }

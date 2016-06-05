@@ -54,15 +54,12 @@ serverS.onValue(server => {
         client.get(`add/${testTable}`, {}, (err, res, body) => {
           let status = res.statusCode
           console.log(body)
-          t.equal(status, 200, 'got a 200 back from server on GET observation')
+          t.equal(status, 200, 'got a 200 back from server on GET add/ observation')
           // POST the observation we made, expect 200 + observation back
-          client.post(`query/${testTable}`, {
-            epoch1: now,
-            epoch2: later,
-          }, (err, res, body) => {
+          client.get(`query/${testTable}?t0=${now}&t1=${later}`, {}, (err, res, body) => {
             let status = res.statusCode
             console.log(body)
-            t.equal(status, 200, 'got a 200 back from server on POST observation')
+            t.equal(status, 200, 'got a 200 back from server on GET query/ observation')
           })
         })
       })
