@@ -24,29 +24,28 @@ npm install boundaries-api
 let boundaries = require('boundaries-api')
 
 const config = {
-  port: 8889,
+  port: 9998,
+  table: 'yo-production',
   db: {
-    host: '192.168.99.100',
-    port: 32769,
+    db: 'test',
+    host: 'localhost',
+    port: 28015,
   },
 }
 
-boundaries(config).onValue(server => {
+let serverS = boundaries(config)
+serverS.onValue(server => {
   console.log('server running! request away')
 })
 ```
 
 ## HTTP API
 
-### PUT '/create/yourObservationClass'
-
-Create a new class of observations, with the given name (here `yourObservationClass`)
-
 ### GET '/add/yourObservationClass'
 
-Add an observation to an existing class, here `yourObservationClass`)
+Add an observation to a class.
 
-I know, why is this a GET? Well, I wanted to use YO to hit this route, and that can only make GET requests. Looking for better solutions.
+*I know, why is this a GET, instead of a PUT request? Well, I wanted to use Yo to hit this route, and that can only make GET requests. Looking for better solutions.*
 
 ### GET '/query/yourObservationClass?t0=1464804227.762&t1=1464804235.249'
 

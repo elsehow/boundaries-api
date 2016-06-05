@@ -3,67 +3,69 @@ const r = require('rethinkdb')
 const Kefir = require('kefir')
 const timestamp = require('unix-timestamp')
 
-module.exports = (connection) => {
+module.exports = (tableName) => {
 
-  function streamFrom (rql) {
-    return Kefir.fromNodeCallback(cb => {
-      rql.run(connection, cb)
-    })
-  }
+  return function (connection) {
 
-  // creates a table in the db
-  function create (table) {
-    let existsMsg = table + ' already exists.'
-    return streamFrom(
-      r.tableList()
-        .contains(table)
-        .do(tableExists => {
-          return r.branch(
-            tableExists,
-            existsMsg,
-            r.tableCreate(table)
-          )
-        })
-    ).flatMap(x => {
-      if (x === existsMsg)
-        return Kefir.constant(existsMsg)
-      return streamFrom(
-        r.table(table).indexCreate('timestamp')
-      )
-    })
-  }
-
-  // adds an observation to table
-  // returns a stream
-  function add (table) {
-    let observation = {
-      timestamp: r.epochTime(timestamp.now())
-    }
-    return streamFrom(
-      r.table(table).insert(observation)
-    )
-  }
-
-  // gets an observation between two unix times (epoch1, epoch2)
-  // returns a stream
-  function get (table, epoch1, epoch2) {
-    return streamFrom(
-      r.table(table).between(
-        r.epochTime(epoch1),
-        r.epochTime(epoch2),
-        {index: 'timestamp'}
-      )
-    ).flatMap(cursor => {
-      return Kefir.stream(emitter => {
-        cursor.on('error', emitter.error)
-        cursor.on('data', emitter.emit)
+    function streamFrom (rql) {
+      return Kefir.fromNodeCallback(cb => {
+        rql.run(connection, cb)
       })
-    })
-  }
+    }
 
-  return {
-    create: create,
-    add: add,
-    get: get,
+    // creates a table in the db
+    function idempotentCreate (table) {
+
+      var createIfExistsRql = r.tableList()
+          .contains(table)
+          .do(exists => r.branch(exists, null, r.tableCreate(table)))
+
+      return streamFrom(createIfExistsRql)
+        .flatMap(x => {
+          if (!x)
+            return Kefir.constant(null)
+          return streamFrom(r.table(table).indexCreate('timestamp'))
+        })
+    }
+
+    // adds an observation to table
+    // returns a stream
+    function add (observation) {
+      let obs = {
+        timestamp: r.epochTime(timestamp.now()),
+        type: observation,
+      }
+      return streamFrom(
+        r.table(tableName).insert(obs)
+      )
+    }
+
+    // gets an observation between two unix times (epoch1, epoch2)
+    // returns a stream
+    function get (observation, epoch1, epoch2) {
+      return streamFrom(
+        r
+          .table(tableName)
+          .between(
+            r.epochTime(epoch1),
+            r.epochTime(epoch2),
+            {index: 'timestamp'}
+          )
+          .filter({type: observation})
+      ).flatMap(cursor => {
+        return Kefir.stream(emitter => {
+          cursor.on('error', emitter.error)
+          cursor.on('data', emitter.emit)
+        })
+      })
+    }
+
+
+    return idempotentCreate(tableName).map(() => {
+      return {
+        add: add,
+        get: get,
+      }
+    })
   }
 }
