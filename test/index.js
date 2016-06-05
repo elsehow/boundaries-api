@@ -27,39 +27,53 @@ serverS.onValue(server => {
 
   let client = request.createClient('http://localhost:' + config.port + '/')
 
-  test('should be able to add a table', t => {
+  let queryStr = (obs, t0, t1) => `query/${obs}?t0=${t0}&t1=${t1}`
 
-    // PUT add an observation to that table, expect 200
-    let now = timestamp.now()
 
-    function addAndGet (cb) {
-      let observation = randomstr()
+  function addAndGet (t, cb) {
 
-      client.get(`add/${observation}`, {}, (err, res, body) => {
+    function query (obs, t0, t1, cb) {
+      client.get(queryStr(obs, t0, t1), {}, (err, res, body) => {
         let status = res.statusCode
         console.log(body)
+        t.deepEqual(body[0].type, obs,
+                    'we got the correct observation back')
         t.equal(status, 200,
-                'got a 200 back from server on GET add/ observation')
-        // POST the observation we made, expect 200 + observation back
-        var queryStr = `query/${observation}?t0=${now}&t1=${timestamp.now()}`
-        client.get(queryStr, {}, (err, res, body) => {
-          let status = res.statusCode
-          console.log(body)
-          t.deepEqual(body.type, observation,
-                      'we got the correct observation back')
-          t.equal(status, 200,
-                  'got a 200 back from server on GET query/ observation')
-          cb()
-        })
+                'got a 200 back from server on GET query/ observation')
+        cb()
       })
     }
 
-    addAndGet(() => {
-      addAndGet(() => {
+    let observation = randomstr()
+    let now = timestamp.now()
+    client.get(`add/${observation}`, {}, (err, res, body) => {
+      let status = res.statusCode
+      console.log(body)
+      t.equal(status, 200,
+              'got a 200 back from server on GET add/ observation')
+      query(observation, now, timestamp.now(), () => {
+        query(observation, now, timestamp.now(), () => {
+          cb()
+        })
+      })
+    })
+  }
+
+  test('get something that doesnt exist', t => {
+    let earlier = timestamp.now()-5
+    client.get(queryStr('coffee', earlier, timestamp.now()), {}, (err, res, body) => {
+      let status = res.statusCode
+      t.deepEquals(body, [], "got an empty array")
+      t.end()
+    })
+  })
+
+  test('should be able to add a table', t => {
+    addAndGet(t, () => {
+      addAndGet(t, () => {
         t.end()
       })
     })
-
   })
 })
 

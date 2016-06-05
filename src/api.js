@@ -43,19 +43,19 @@ module.exports = (tableName) => {
     // gets an observation between two unix times (epoch1, epoch2)
     // returns a stream
     function get (observation, epoch1, epoch2) {
-      return streamFrom(
-        r
-          .table(tableName)
+      var cursorS = streamFrom(
+        r.table(tableName)
           .between(
             r.epochTime(epoch1),
             r.epochTime(epoch2),
             {index: 'timestamp'}
           )
           .filter({type: observation})
-      ).flatMap(cursor => {
-        return Kefir.stream(emitter => {
-          cursor.on('error', emitter.error)
-          cursor.on('data', emitter.emit)
+      )
+
+      return cursorS.flatMap(cursor => {
+        return Kefir.fromNodeCallback(cb => {
+          cursor.toArray(cb)
         })
       })
     }
