@@ -1,5 +1,6 @@
 'use strict'
 const express = require('express')
+const cors = require('cors')
 
 function handle (response, stream) {
   stream.onError(e => response.status(500).send(e))
@@ -18,6 +19,8 @@ module.exports = (api) => {
   }
 
   let app = express()
+
+  app.use(cors())
 
   app.get('/add/:table', handleAdd)
 
